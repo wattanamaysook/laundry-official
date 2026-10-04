@@ -1,0 +1,693 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #0f0f0f;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+    height: 80px;
+    padding: 0 8%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 35px;
+}
+
+.nav-links a {
+    color: #aaa;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: white;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+    min-height: calc(100vh - 80px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+}
+
+.hero-content {
+    max-width: 700px;
+}
+
+.hero-subtitle {
+    color: #888;
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+}
+
+.hero h1 {
+    font-size: 80px;
+    line-height: 1.05;
+    margin-bottom: 25px;
+}
+
+.hero-description {
+    color: #999;
+    font-size: 18px;
+    line-height: 1.7;
+    margin-bottom: 35px;
+}
+
+
+/* =========================
+   BUTTON
+========================= */
+
+.branch-button {
+    display: block;
+    width: 100%;
+
+    margin-top: 20px;
+    padding: 13px;
+
+    border: none;
+    border-radius: 30px;
+
+    background-color: white;
+    color: black;
+
+    text-align: center;
+    text-decoration: none;
+
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.branch-button:hover {
+    transform: scale(1.03);
+}
+
+/* =========================
+   START BUTTON
+========================= */
+
+.start-button {
+    display: inline-block;
+
+    padding: 15px 35px;
+
+    border-radius: 30px;
+
+    background-color: white;
+    color: black;
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+    transition: 0.3s;
+}
+
+.start-button:hover {
+    transform: scale(1.05);
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer {
+    padding: 60px 8% 25px;
+    border-top: 1px solid #222;
+    margin-top: 100px;
+}
+
+.footer-content {
+    text-align: center;
+}
+
+.footer-logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.footer-content p {
+    color: #888;
+    font-size: 14px;
+}
+
+.footer-bottom {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #222;
+    text-align: center;
+}
+
+.footer-bottom p {
+    color: #555;
+    font-size: 13px;
+}
+
+
+/* =========================
+   BRANCHES
+========================= */
+
+.branches-page {
+    min-height: calc(100vh - 80px);
+    padding: 100px 8%;
+}
+
+.branches-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.section-subtitle {
+    color: #888;
+    letter-spacing: 4px;
+    margin-bottom: 15px;
+}
+
+.branches-header h1 {
+    font-size: 56px;
+    margin-bottom: 15px;
+}
+
+.branches-header p:last-child {
+    color: #888;
+}
+
+.branch-list {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.branch-card {
+    padding: 35px;
+
+    background-color: #171717;
+    border: 1px solid #252525;
+    border-radius: 20px;
+
+    transition: 0.3s;
+}
+
+.branch-card:hover {
+    transform: translateY(-5px);
+    border-color: #444;
+}
+
+.branch-card h2 {
+    margin-bottom: 15px;
+}
+
+.branch-card p {
+    color: #888;
+    margin-bottom: 10px;
+}
+
+
+/* =========================
+   MACHINES
+========================= */
+
+.machines-page {
+    min-height: calc(100vh - 80px);
+    padding: 100px 8%;
+}
+
+.machines-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.machines-header h1 {
+    font-size: 56px;
+    margin-bottom: 15px;
+}
+
+.machines-header p:last-child {
+    color: #888;
+}
+
+.machine-list {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.machine-card {
+    padding: 35px;
+
+    background-color: #171717;
+    border: 1px solid #252525;
+    border-radius: 20px;
+
+    transition: 0.3s;
+}
+
+.machine-card:hover {
+    transform: translateY(-5px);
+    border-color: #444;
+}
+
+.machine-number {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.machine-card h2 {
+    margin-bottom: 15px;
+}
+
+.machine-card p {
+    color: #888;
+    margin-bottom: 20px;
+}
+
+
+/* =========================
+   MACHINE STATUS
+========================= */
+
+.machine-status {
+    display: block;
+    margin-bottom: 25px;
+
+    font-size: 14px;
+}
+
+.machine-status.available {
+    color: #aaa;
+}
+
+.machine-status.unavailable {
+    color: #555;
+}
+
+.machine-remaining {
+    margin-top: -15px;
+    margin-bottom: 20px;
+    color: #f08b8b;
+    font-size: 14px;
+}
+
+
+/* =========================
+   MACHINE BUTTON
+========================= */
+
+.machine-button {
+    display: block;
+    width: 100%;
+
+    padding: 13px;
+
+    border: none;
+    border-radius: 30px;
+
+    background-color: white;
+    color: black;
+
+    text-align: center;
+    text-decoration: none;
+
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.machine-button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+/* =========================
+   WASHING MODES
+========================= */
+
+.modes-page {
+    min-height: calc(100vh - 80px);
+    padding: 100px 8%;
+}
+
+.modes-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.modes-header h1 {
+    font-size: 56px;
+    margin-bottom: 15px;
+}
+
+.modes-header p:last-child {
+    color: #888;
+}
+
+.selection-context {
+    max-width: 760px;
+    margin: -25px auto 45px;
+    padding: 18px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 14px;
+    background: #171717;
+    border: 1px solid #303030;
+    border-radius: 14px;
+    text-align: center;
+}
+
+.selection-context span {
+    color: #999;
+}
+
+.selection-context strong {
+    color: #fff;
+}
+
+
+/* =========================
+   MODE LIST
+========================= */
+
+.mode-list {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+
+/* =========================
+   MODE CARD
+========================= */
+
+.mode-card {
+    padding: 35px;
+
+    background-color: #171717;
+    border: 1px solid #252525;
+    border-radius: 20px;
+
+    transition: 0.3s;
+}
+
+.mode-card:hover {
+    transform: translateY(-5px);
+    border-color: #444;
+}
+
+
+/* =========================
+   MODE NUMBER
+========================= */
+
+.mode-number {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+
+/* =========================
+   MODE TITLE
+========================= */
+
+.mode-card h2 {
+    margin-bottom: 8px;
+}
+
+.mode-card h3 {
+    color: #777;
+    font-size: 14px;
+    font-weight: normal;
+    margin-bottom: 20px;
+}
+
+
+/* =========================
+   MODE DESCRIPTION
+========================= */
+
+.mode-card p {
+    color: #888;
+    line-height: 1.7;
+
+    min-height: 82px;
+
+    margin-bottom: 25px;
+}
+
+
+/* =========================
+   MODE BUTTON
+========================= */
+
+.mode-button {
+    display: block;
+    width: 100%;
+
+    padding: 13px;
+
+    border: none;
+    border-radius: 30px;
+
+    background-color: white;
+    color: black;
+
+    text-align: center;
+    text-decoration: none;
+
+    font-weight: bold;
+
+    transition: 0.3s;
+}
+
+.mode-button:hover {
+    transform: scale(1.03);
+}
+ /* =========================
+    SUMMARY
+ ========================= */
+
+.summary-page {
+    min-height: calc(100vh - 80px);
+    padding: 100px 8%;
+}
+
+.summary-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.summary-header h1 {
+    font-size: 56px;
+    margin-bottom: 15px;
+}
+
+.summary-header p:last-child {
+    color: #888;
+}
+
+
+/* =========================
+   SUMMARY CARD
+========================= */
+
+.summary-card {
+    max-width: 700px;
+    margin: 0 auto;
+
+    padding: 40px;
+
+    background-color: #171717;
+
+    border: 1px solid #252525;
+    border-radius: 20px;
+}
+
+
+/* =========================
+   SUMMARY ITEM
+========================= */
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 20px 0;
+
+    border-bottom: 1px solid #252525;
+}
+
+.summary-item span {
+    color: #888;
+}
+
+.summary-item strong {
+    font-weight: normal;
+}
+
+
+/* =========================
+   TOTAL
+========================= */
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 30px 0;
+
+    font-size: 20px;
+}
+
+.summary-total strong {
+    font-size: 28px;
+}
+
+
+/* =========================
+   PAYMENT BUTTON
+========================= */
+
+.summary-button {
+    display: block;
+
+    width: 100%;
+
+    padding: 15px;
+
+    border-radius: 30px;
+
+    background-color: white;
+    color: black;
+
+    text-align: center;
+    text-decoration: none;
+
+    font-weight: bold;
+
+    transition: 0.3s;
+}
+
+.summary-button:hover {
+    transform: scale(1.03);
+}
+
+/* =========================
+   SUMMARY RESPONSIVE
+========================= */
+
+@media (max-width: 600px) {
+
+    .summary-page {
+        padding: 70px 5%;
+    }
+
+    .summary-header h1 {
+        font-size: 40px;
+    }
+
+    .summary-card {
+        padding: 25px;
+    }
+
+    .summary-item {
+        gap: 20px;
+    }
+
+    .summary-item strong {
+        text-align: right;
+    }
+
+    .summary-total strong {
+        font-size: 24px;
+    }
+
+}
+
+/* =========================
+   MOCK PAYMENT
+========================= */
+
+.payment-box {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.payment-qr {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.qr-placeholder {
+    width: 220px;
+    height: 220px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: white;
+    color: black;
+
+    font-size: 32px;
+    font-weight: bold;
+
+    border-radius: 10px;
+}
+
+.payment-note {
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.payment-amount {
+    font-size: 18px;
+    margin-bottom: 25px;
+}

@@ -1,0 +1,5 @@
+config/env.php
+.DS_Store
+.vscode/
+*.log
+uploads/*
