@@ -3,6 +3,7 @@
 session_start();
 
 require __DIR__ . '/../config/database.php';
+require __DIR__ . '/../includes/display_helpers.php';
 
 $db = databaseConnection();
 
@@ -44,6 +45,7 @@ $stmt = $db->prepare("
         m.capacity_kg,
         m.status AS machine_status,
         m.running_until,
+        GREATEST(0, TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, m.running_until)) AS remaining_seconds,
 
         wm.name AS mode_name,
         wm.code AS mode_code
@@ -102,28 +104,12 @@ $machine_code = $order['machine_code'];
 $machine_capacity = (int) $order['capacity_kg'];
 
 $mode_name = $order['mode_name'];
+$machine_display = laundryMachineLabel($machine_capacity, $machine_code);
+$mode_display = laundryModeLabel($order['mode_code'], $mode_name);
 
 $duration_minutes = (int) $order['duration_minutes'];
 
-$running_until = $order['running_until'];
-
-
-// =========================
-// CALCULATE REMAINING TIME
-// =========================
-
-$remaining_seconds = 0;
-
-if ($running_until !== null) {
-
-    $end_timestamp = strtotime($running_until);
-
-    $remaining_seconds = $end_timestamp - time();
-
-    if ($remaining_seconds < 0) {
-        $remaining_seconds = 0;
-    }
-}
+$remaining_seconds = (int) $order['remaining_seconds'];
 
 
 // =========================
@@ -207,35 +193,8 @@ $initial_time = sprintf(
 
                 <strong>
 
-                    <?php echo htmlspecialchars(
-                        $machine_name,
-                        ENT_QUOTES,
-                        'UTF-8'
-                    ); ?>
+                    <?php echo htmlspecialchars($machine_display, ENT_QUOTES, 'UTF-8'); ?>
 
-                    #
-
-                    <?php echo htmlspecialchars(
-                        $machine_code,
-                        ENT_QUOTES,
-                        'UTF-8'
-                    ); ?>
-
-                </strong>
-
-            </div>
-
-
-            <!-- Capacity -->
-
-            <div class="summary-item">
-
-                <span>
-                    ขนาดเครื่อง
-                </span>
-
-                <strong>
-                    <?php echo $machine_capacity; ?> KG
                 </strong>
 
             </div>
@@ -272,11 +231,7 @@ $initial_time = sprintf(
 
                 <strong>
 
-                    <?php echo htmlspecialchars(
-                        $mode_name,
-                        ENT_QUOTES,
-                        'UTF-8'
-                    ); ?>
+                    <?php echo htmlspecialchars($mode_display, ENT_QUOTES, 'UTF-8'); ?>
 
                 </strong>
 

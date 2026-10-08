@@ -8,6 +8,26 @@ body {
     background-color: #0f0f0f;
     color: white;
     font-family: Arial, sans-serif;
+    animation: page-enter 180ms ease-out both;
+    transition: opacity 160ms ease;
+}
+
+body.is-leaving {
+    opacity: 0;
+    animation: none;
+    pointer-events: none;
+}
+
+@keyframes page-enter {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body {
+        animation: none;
+        transition: none;
+    }
 }
 
 

@@ -3,6 +3,7 @@
 session_start();
 
 require __DIR__ . '/../config/database.php';
+require __DIR__ . '/../includes/display_helpers.php';
 
 $db = databaseConnection();
 
@@ -243,6 +244,15 @@ if (!empty($orderHistory)) {
                         $order['payment_status'] === 'paid'
                         && !$isRunning;
 
+                    $machineDisplay = laundryMachineLabel(
+                        (int) $order['capacity_kg'],
+                        (string) $order['machine_code']
+                    );
+                    $modeDisplay = laundryModeLabel(
+                        (string) $order['mode_code'],
+                        (string) $order['mode_name']
+                    );
+
                     ?>
 
 
@@ -272,49 +282,9 @@ if (!empty($orderHistory)) {
 
                         <h2>
 
-                            <?php echo htmlspecialchars(
-                                $order['machine_name'],
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ); ?>
+                            <?php echo htmlspecialchars($machineDisplay, ENT_QUOTES, 'UTF-8'); ?>
 
                         </h2>
-
-
-                        <p>
-
-                            เครื่อง
-
-                            <strong>
-
-                                <?php echo htmlspecialchars(
-                                    $order['machine_code'],
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                ); ?>
-
-                            </strong>
-
-                        </p>
-
-
-                        <!-- =========================
-                             CAPACITY
-                        ========================= -->
-
-                        <p>
-
-                            ขนาด
-
-                            <strong>
-
-                                <?php echo (int) $order['capacity_kg']; ?>
-
-                                KG
-
-                            </strong>
-
-                        </p>
 
 
                         <!-- =========================
@@ -348,11 +318,7 @@ if (!empty($orderHistory)) {
 
                             <strong>
 
-                                <?php echo htmlspecialchars(
-                                    $order['mode_name'],
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                ); ?>
+                                <?php echo htmlspecialchars($modeDisplay, ENT_QUOTES, 'UTF-8'); ?>
 
                             </strong>
 

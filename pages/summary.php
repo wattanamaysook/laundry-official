@@ -3,6 +3,7 @@
 session_start();
 
 require __DIR__ . '/../config/database.php';
+require __DIR__ . '/../includes/display_helpers.php';
 
 $db = databaseConnection();
 
@@ -106,6 +107,8 @@ $machine_capacity = (int) $orderData['capacity_kg'];
 
 $mode_name = $orderData['mode_name'];
 $mode_code = $orderData['mode_code'];
+$machine_display = laundryMachineLabel($machine_capacity, $machine_code);
+$mode_display = laundryModeLabel($mode_code, $mode_name);
 
 $total_price = (float) $orderData['price'];
 
@@ -129,7 +132,6 @@ $_SESSION['price'] = $total_price;
 
 <head>
 
-```
 <meta charset="UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -137,13 +139,11 @@ $_SESSION['price'] = $total_price;
 <title>สรุปรายการ | Laundry Official</title>
 
 <link rel="stylesheet" href="../public/css/style.css">
-```
 
 </head>
 
 <body>
 
-```
 <?php include '../includes/navbar.php'; ?>
 
 
@@ -203,23 +203,7 @@ $_SESSION['price'] = $total_price;
 
             <strong>
 
-                <?php echo htmlspecialchars(
-                    $machine_name,
-                    ENT_QUOTES,
-                    'UTF-8'
-                ); ?>
-
-                #
-
-                <?php echo htmlspecialchars(
-                    $machine_code,
-                    ENT_QUOTES,
-                    'UTF-8'
-                ); ?>
-
-                ·
-
-                <?php echo $machine_capacity; ?> kg
+                <?php echo htmlspecialchars($machine_display, ENT_QUOTES, 'UTF-8'); ?>
 
             </strong>
 
@@ -235,11 +219,7 @@ $_SESSION['price'] = $total_price;
             </span>
 
             <strong>
-                <?php echo htmlspecialchars(
-                    $mode_name,
-                    ENT_QUOTES,
-                    'UTF-8'
-                ); ?>
+                <?php echo htmlspecialchars($mode_display, ENT_QUOTES, 'UTF-8'); ?>
             </strong>
 
         </div>
@@ -255,12 +235,7 @@ $_SESSION['price'] = $total_price;
 
             <strong>
 
-                <?php echo number_format(
-                    $total_price,
-                    2
-                ); ?>
-
-                <?php echo $price_unit; ?>
+                <?php echo number_format($total_price, 2); ?> <?php echo $price_unit; ?>
 
             </strong>
 
@@ -277,12 +252,7 @@ $_SESSION['price'] = $total_price;
 
             <strong>
 
-                <?php echo number_format(
-                    $total_price,
-                    2
-                ); ?>
-
-                <?php echo $price_unit; ?>
+                ฿<?php echo number_format($total_price, 2); ?>
 
             </strong>
 
@@ -308,7 +278,6 @@ $_SESSION['price'] = $total_price;
 
 
 <script src="../public/js/main.js"></script>
-```
 
 </body>
 

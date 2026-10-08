@@ -92,7 +92,8 @@ $stmt = $db->prepare("
     SELECT
         id,
         status,
-        running_until
+        running_until,
+        TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, running_until) AS seconds_remaining
     FROM machines
     WHERE id = :machine_id
 ");
@@ -121,11 +122,7 @@ if (!$machine) {
 
 if ($machine['running_until'] !== null) {
 
-    $runningUntil = strtotime(
-        $machine['running_until']
-    );
-
-    if ($runningUntil > time()) {
+    if ((int) $machine['seconds_remaining'] > 0) {
 
         echo json_encode([
             'success' => false,
@@ -150,6 +147,7 @@ $stmt = $db->prepare("
 
     WHERE id = :machine_id
       AND status = 'washing'
+      AND (running_until IS NULL OR running_until <= CURRENT_TIMESTAMP)
 ");
 
 $stmt->execute([

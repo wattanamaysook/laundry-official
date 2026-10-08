@@ -121,7 +121,8 @@ if ($order['payment_status'] === 'pending') {
             SELECT
                 id,
                 status,
-                running_until
+                running_until,
+                running_until > CURRENT_TIMESTAMP AS is_running
             FROM machines
             WHERE id = :machine_id
             FOR UPDATE
@@ -145,7 +146,12 @@ if ($order['payment_status'] === 'pending') {
 
         // ต้องเป็น available ก่อนเริ่มงาน
 
-        if ($machine['status'] !== 'available') {
+        // Use MariaDB's clock for the lock check too. A future running_until
+        // means the machine is still occupied even if its status drifted.
+        if (
+            $machine['status'] !== 'available' ||
+            (bool) $machine['is_running']
+        ) {
 
             throw new RuntimeException(
                 'เครื่องนี้ไม่พร้อมใช้งาน'
@@ -158,10 +164,11 @@ if ($order['payment_status'] === 'pending') {
         // CALCULATE RUNNING UNTIL
         // =========================
 
-        $runningUntil = date(
-            'Y-m-d H:i:s',
-            time() + ($duration_minutes * 60)
-        );
+        // Calculate from the database clock so comparisons using
+        // CURRENT_TIMESTAMP cannot expire the machine early due to timezone drift.
+        $runningUntil = $db->query(
+            'SELECT DATE_ADD(CURRENT_TIMESTAMP, INTERVAL ' . $duration_minutes . ' MINUTE)'
+        )->fetchColumn();
 
 
         // =========================
@@ -183,47 +190,9 @@ if ($order['payment_status'] === 'pending') {
             ':order_id' => $order_id
         ]);
 
-
-        // ตรวจสอบว่า Order ถูกเปลี่ยนเป็น paid จริง
-
         if ($stmt->rowCount() !== 1) {
-
-            throw new RuntimeException(
-                'ไม่สามารถยืนยันการชำระเงินได้'
-            );
-
+            throw new RuntimeException('รายการนี้ถูกดำเนินการไปแล้ว');
         }
-
-
-        // =========================
-        // ACTIVITY LOG - PAYMENT
-        // =========================
-
-        $logStmt = $db->prepare("
-            INSERT INTO activity_logs (
-                action,
-                description,
-                entity_type,
-                entity_id
-            )
-            VALUES (
-                :action,
-                :description,
-                :entity_type,
-                :entity_id
-            )
-        ");
-
-        $logStmt->execute([
-            ':action' => 'payment_success',
-            ':description' => sprintf(
-                'ชำระเงินสำเร็จ Order %s จำนวนเงิน %.2f บาท',
-                $order['transaction_id'],
-                (float) $order['total_amount']
-            ),
-            ':entity_type' => 'order',
-            ':entity_id' => $order_id
-        ]);
 
 
         // =========================
@@ -239,6 +208,7 @@ if ($order['payment_status'] === 'pending') {
 
             WHERE id = :machine_id
               AND status = 'available'
+              AND (running_until IS NULL OR running_until <= CURRENT_TIMESTAMP)
         ");
 
         $stmt->execute([
@@ -258,42 +228,7 @@ if ($order['payment_status'] === 'pending') {
         }
 
 
-        // =========================
-        // ACTIVITY LOG - MACHINE START
-        // =========================
-
-        $logStmt = $db->prepare("
-            INSERT INTO activity_logs (
-                action,
-                description,
-                entity_type,
-                entity_id
-            )
-            VALUES (
-                :action,
-                :description,
-                :entity_type,
-                :entity_id
-            )
-        ");
-
-        $logStmt->execute([
-            ':action' => 'machine_started',
-            ':description' => sprintf(
-                'เริ่มเครื่อง %s สำหรับ Order %s ระยะเวลา %d นาที',
-                $order['machine_code'],
-                $order['transaction_id'],
-                $duration_minutes
-            ),
-            ':entity_type' => 'machine',
-            ':entity_id' => (int) $order['machine_id']
-        ]);
-
-
-        // =========================
-        // COMMIT
-        // =========================
-
+        // Commit
         $db->commit();
 
 

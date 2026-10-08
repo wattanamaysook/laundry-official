@@ -1,4 +1,3 @@
-```php
 <?php
 
 session_start();
@@ -100,7 +99,12 @@ $stmt = $db->prepare("
         name,
         capacity_kg,
         status,
-        running_until
+        running_until,
+        CASE
+            WHEN running_until > CURRENT_TIMESTAMP THEN 'washing'
+            ELSE status
+        END AS display_status,
+        GREATEST(0, TIMESTAMPDIFF(SECOND, CURRENT_TIMESTAMP, running_until)) AS remaining_seconds
     FROM machines
     WHERE branch_id = :branch_id
     ORDER BY capacity_kg ASC, machine_code ASC
@@ -166,171 +170,53 @@ if (!$branch) {
     <?php include '../includes/navbar.php'; ?>
 
 
-    <!-- Machines -->
-
     <section class="machines-page">
-
-
         <div class="machines-header">
-
-            <p class="section-subtitle">
-                WASHING MACHINES
-            </p>
-
-            <h1>
-                เลือกเครื่องซักผ้า
-            </h1>
-
-            <p>
-
-                <?php echo htmlspecialchars(
-                    $branch['name'],
-                    ENT_QUOTES,
-                    'UTF-8'
-                ); ?>
-
-            </p>
-
+            <p class="section-subtitle">WASHING MACHINES</p>
+            <h1>เลือกเครื่องซักผ้า</h1>
+            <p><?php echo htmlspecialchars($branch['name'], ENT_QUOTES, 'UTF-8'); ?></p>
         </div>
-
 
         <div class="machine-list">
-
-
             <?php foreach ($machines as $machine): ?>
-
-
                 <?php
-
-                $isAvailable =
-                    $machine['status'] === 'available';
-
-                $remainingSeconds = 0;
-                if (
-                    $machine['status'] === 'washing' &&
-                    !empty($machine['running_until'])
-                ) {
-                    $runningUntil = strtotime($machine['running_until']);
-                    if ($runningUntil !== false) {
-                        $remainingSeconds = max(0, $runningUntil - time());
-                    }
-                }
-
+                $displayStatus = $machine['display_status'];
+                $isAvailable = $displayStatus === 'available';
+                $remainingSeconds = (int) $machine['remaining_seconds'];
                 ?>
-
-
                 <div class="machine-card">
+                    <div class="machine-number">#<?php echo htmlspecialchars($machine['machine_code'], ENT_QUOTES, 'UTF-8'); ?></div>
+                    <h2><?php echo htmlspecialchars($machine['name'], ENT_QUOTES, 'UTF-8'); ?></h2>
+                    <p>ขนาด <?php echo (int) $machine['capacity_kg']; ?> kg</p>
 
-
-                    <div class="machine-number">
-
-                        #
-
-                        <?php echo htmlspecialchars(
-                            $machine['machine_code'],
-                            ENT_QUOTES,
-                            'UTF-8'
-                        ); ?>
-
-                    </div>
-
-
-                    <h2>
-
-                        <?php echo htmlspecialchars(
-                            $machine['name'],
-                            ENT_QUOTES,
-                            'UTF-8'
-                        ); ?>
-
-                    </h2>
-
-
-                    <p>
-
-                        ขนาด
-
-                        <?php echo (int) $machine['capacity_kg']; ?>
-
-                        kg
-
-                    </p>
-
-
-                    <span
-                        class="machine-status <?php echo $isAvailable ? 'available' : 'unavailable'; ?>"
-                    >
-
-                        ●
-
-                        <?php
-
-                        if ($machine['status'] === 'available') {
-
+                    <span class="machine-status <?php echo $isAvailable ? 'available' : 'unavailable'; ?>">
+                        ● <?php
+                        if ($displayStatus === 'available') {
                             echo 'พร้อมใช้งาน';
-
-                        } elseif ($machine['status'] === 'washing') {
-
+                        } elseif ($displayStatus === 'washing') {
                             echo 'กำลังใช้งาน';
-
                         } else {
-
                             echo 'ปิดปรับปรุง';
-
                         }
-
                         ?>
-
                     </span>
 
-
-                    <?php if ($machine['status'] === 'washing' && $remainingSeconds > 0): ?>
-
-                        <p
-                            class="machine-remaining"
-                            data-remaining-seconds="<?php echo $remainingSeconds; ?>"
-                        >
-                            เหลือเวลา
-                            <span class="remaining-time"><?php echo sprintf('%02d:%02d', floor($remainingSeconds / 60), $remainingSeconds % 60); ?></span>
+                    <?php if ($displayStatus === 'washing' && $remainingSeconds > 0): ?>
+                        <p class="machine-remaining" data-remaining-seconds="<?php echo $remainingSeconds; ?>">
+                            เหลือเวลา <span class="remaining-time"><?php echo sprintf('%02d:%02d', floor($remainingSeconds / 60), $remainingSeconds % 60); ?></span>
                         </p>
-
                     <?php endif; ?>
-
 
                     <?php if ($isAvailable): ?>
-
-
-                        <a
-                            href="mode.php?machine_id=<?php echo (int) $machine['id']; ?>"
-                            class="machine-button"
-                        >
-                            เลือกเครื่อง
-                        </a>
-
-
+                        <a href="mode.php?machine_id=<?php echo (int) $machine['id']; ?>" class="machine-button">เลือกเครื่อง</a>
                     <?php else: ?>
-
-
-                        <button
-                            class="machine-button"
-                            disabled
-                        >
-                            <?php echo $machine['status'] === 'washing' ? 'กำลังใช้งาน' : 'ปิดปรับปรุง'; ?>
+                        <button class="machine-button" disabled>
+                            <?php echo $displayStatus === 'washing' ? 'กำลังใช้งาน' : 'ไม่สามารถเลือกได้'; ?>
                         </button>
-
-
                     <?php endif; ?>
-
-
                 </div>
-
-
             <?php endforeach; ?>
-
-
         </div>
-
-
     </section>
 
 
@@ -357,6 +243,7 @@ if (!$branch) {
             tick();
             window.setInterval(tick, 1000);
         });
+
     </script>
 
     <script src="../public/js/main.js"></script>

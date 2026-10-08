@@ -3,6 +3,7 @@
 session_start();
 
 require __DIR__ . '/../config/database.php';
+require __DIR__ . '/../includes/display_helpers.php';
 
 $db = databaseConnection();
 
@@ -68,6 +69,7 @@ $stmt = $db->prepare("
     WHERE m.id = :machine_id
       AND m.branch_id = :branch_id
       AND m.status = 'available'
+      AND (m.running_until IS NULL OR m.running_until <= CURRENT_TIMESTAMP)
       AND b.status = 'open'
 ");
 
@@ -124,7 +126,6 @@ $modePrices = $stmt->fetchAll();
 
 <head>
 
-```
 <meta charset="UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -132,13 +133,11 @@ $modePrices = $stmt->fetchAll();
 <title>เลือกโหมด | Laundry Official</title>
 
 <link rel="stylesheet" href="../public/css/style.css">
-```
 
 </head>
 
 <body>
 
-```
 <?php include '../includes/navbar.php'; ?>
 
 
@@ -205,16 +204,6 @@ $modePrices = $stmt->fetchAll();
 
             <?php
 
-            // ชื่อภาษาไทยของแต่ละโหมด
-            $thaiNames = [
-                'normal' => 'โหมดปกติ',
-                'quick' => 'โหมดซักด่วน',
-                'delicate' => 'โหมดถนอมผ้า',
-                'bedding' => 'โหมดชุดเครื่องนอน',
-                'wool' => 'โหมดผ้าขนสัตว์',
-                'rinse_spin' => 'โหมดปั่นแห้ง'
-            ];
-
             // คำอธิบายแต่ละโหมด
             $descriptions = [
                 'normal' =>
@@ -236,7 +225,7 @@ $modePrices = $stmt->fetchAll();
                     'เหมาะสำหรับผ้าที่ซักแล้วและต้องการปั่นแห้ง'
             ];
 
-            $thaiName = $thaiNames[$mode['code']] ?? $mode['name'];
+            $modeDisplayName = laundryModeLabel((string) $mode['code'], (string) $mode['name']);
 
             $description = $descriptions[$mode['code']]
                 ?? 'เลือกโหมดนี้เพื่อใช้งานเครื่องซักผ้า';
@@ -264,21 +253,8 @@ $modePrices = $stmt->fetchAll();
 
 
                 <h2>
-                    <?php echo htmlspecialchars(
-                        $thaiName,
-                        ENT_QUOTES,
-                        'UTF-8'
-                    ); ?>
+                    <?php echo htmlspecialchars($modeDisplayName, ENT_QUOTES, 'UTF-8'); ?>
                 </h2>
-
-
-                <h3>
-                    <?php echo htmlspecialchars(
-                        $mode['name'],
-                        ENT_QUOTES,
-                        'UTF-8'
-                    ); ?>
-                </h3>
 
 
                 <p>
@@ -322,7 +298,6 @@ $modePrices = $stmt->fetchAll();
 
 
 <script src="../public/js/main.js"></script>
-```
 
 </body>
 

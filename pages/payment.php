@@ -3,6 +3,7 @@
 session_start();
 
 require __DIR__ . '/../config/database.php';
+require __DIR__ . '/../includes/display_helpers.php';
 
 $db = databaseConnection();
 
@@ -118,6 +119,8 @@ $machine_capacity = (int) $orderData['capacity_kg'];
 $mode_id = (int) $orderData['mode_id'];
 $mode_name = $orderData['mode_name'];
 $mode_code = $orderData['mode_code'];
+$machine_display = laundryMachineLabel($machine_capacity, $machine_code);
+$mode_display = laundryModeLabel($mode_code, $mode_name);
 
 $total_price = (float) $orderData['price'];
 
@@ -133,11 +136,6 @@ $duration_minutes = (int) $orderData['duration_minutes'];
 // =========================
 // PRICE UNIT
 // =========================
-
-$price_unit = $billing_unit === 'per_hour'
-    ? 'บาท / ชั่วโมง'
-    : 'บาท / ครั้ง';
-
 
 // =========================
 // CHECK DURATION
@@ -475,21 +473,7 @@ $_SESSION['duration_minutes'] = $duration_minutes;
 
                 <strong>
 
-                    <?php echo htmlspecialchars(
-                        $machine_name,
-                        ENT_QUOTES,
-                        'UTF-8'
-                    ); ?>
-
-                    #
-
-                    <?php echo htmlspecialchars(
-                        $machine_code,
-                        ENT_QUOTES,
-                        'UTF-8'
-                    ); ?>
-
-                    (<?php echo $machine_capacity; ?> KG)
+                    <?php echo htmlspecialchars($machine_display, ENT_QUOTES, 'UTF-8'); ?>
 
                 </strong>
 
@@ -506,11 +490,7 @@ $_SESSION['duration_minutes'] = $duration_minutes;
 
                 <strong>
 
-                    <?php echo htmlspecialchars(
-                        $mode_name,
-                        ENT_QUOTES,
-                        'UTF-8'
-                    ); ?>
+                    <?php echo htmlspecialchars($mode_display, ENT_QUOTES, 'UTF-8'); ?>
 
                 </strong>
 
@@ -552,12 +532,7 @@ $_SESSION['duration_minutes'] = $duration_minutes;
 
                 <strong>
 
-                    <?php echo number_format(
-                        $total_price,
-                        2
-                    ); ?>
-
-                    <?php echo $price_unit; ?>
+                    ฿<?php echo number_format($total_price, 2); ?>
 
                 </strong>
 
@@ -602,12 +577,7 @@ $_SESSION['duration_minutes'] = $duration_minutes;
 
                     ยอดชำระ
 
-                    <?php echo number_format(
-                        $total_price,
-                        2
-                    ); ?>
-
-                    <?php echo $price_unit; ?>
+                    ฿<?php echo number_format($total_price, 2); ?>
 
                 </p>
 
